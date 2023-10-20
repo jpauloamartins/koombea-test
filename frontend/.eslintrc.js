@@ -48,11 +48,11 @@ module.exports = {
     // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-files
     // required to lint *.vue files
     'vue'
-    
+
     // https://github.com/typescript-eslint/typescript-eslint/issues/389#issuecomment-509292674
     // Prettier has not been included as plugin to avoid performance impact
     // add it as an extension for your IDE
-    
+
   ],
 
   globals: {
@@ -70,22 +70,43 @@ module.exports = {
 
   // add your custom rules here
   rules: {
-    
+    // allow async-await
+    'generator-star-spacing': 'off',
+    // allow paren-less arrow functions
+    'arrow-parens': 'off',
+    'one-var': 'off',
+    'no-void': 'off',
+    'multiline-ternary': 'off',
+
     'prefer-promise-reject-errors': 'off',
 
-    quotes: ['warn', 'single', { avoidEscape: true }],
+    'semi': ['warn', 'always'],
+    'semi-style': 'warn',
+    'space-before-function-paren': ['warn', {
+      'anonymous': 'never',
+      'named': 'never',
+      'asyncArrow': 'always',
+    }],
+    'comma-dangle': ['warn', 'always-multiline'],
+    'eol-last': ['warn', 'always'],
+    'max-len': ['warn', {
+      'code': 80,
+      'comments': 120,
+    }],
+    'no-trailing-spaces': 'warn',
+    'quotes': ['warn', 'single', { avoidEscape: true }],
 
-    // this rule, if on, would require explicit return type on the `render` function
+    // Vue
+    'vue/component-name-in-template-casing': ['error', 'kebab-case'],
+
+    // TypeScript
     '@typescript-eslint/explicit-function-return-type': 'off',
-
-    // in plain CommonJS modules, you can't use `import foo = require('foo')` to pass this rule, so it has to be disabled
-    '@typescript-eslint/no-var-requires': 'off',
-
-    // The core 'no-unused-vars' rules (in the eslint:recommended ruleset)
-    // does not work with type definitions
-    'no-unused-vars': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-inferrable-types': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
+    // '@typescript-eslint/no-unsafe-member-access': 'warn',
 
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
-  }
-}
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+  },
+};
