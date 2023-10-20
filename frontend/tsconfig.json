@@ -1,6 +1,18 @@
 {
   "extends": "@quasar/app-webpack/tsconfig-preset",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@api/*": ["./src/api/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@boot/*": ["./src/boot/*"],
+      "@components/*": ["./src/components/*"],
+      "@helpers/*": ["./src/helpers/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@models/*": ["./src/models/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@stores/*": ["./src/stores/*"]
+    }
   }
 }

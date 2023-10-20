@@ -1,11 +1,11 @@
 import { RouteRecordRaw } from 'vue-router';
 
+import authRoutes from '@modules/auth/routes';
+import scrapeRoutes from '@modules/scrape/routes';
+
 const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
-  },
+  ...authRoutes,
+  ...scrapeRoutes,
 
   // Always leave this as last one,
   // but you can also remove it

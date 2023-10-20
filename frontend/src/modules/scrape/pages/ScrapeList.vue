@@ -1,0 +1,3 @@
+<template>
+  scrape-list
+</template>

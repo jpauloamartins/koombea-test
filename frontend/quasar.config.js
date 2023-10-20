@@ -13,6 +13,7 @@
 
 
 const { configure } = require('quasar/wrappers');
+const path = require('path');
 
 module.exports = configure(function(ctx) {
   return {
@@ -33,8 +34,8 @@ module.exports = configure(function(ctx) {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
     boot: [
-
       'axios',
+      'vee-validate',
     ],
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
@@ -80,6 +81,22 @@ module.exports = configure(function(ctx) {
       // https://v2.quasar.dev/quasar-cli-webpack/handling-webpack
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
       // chainWebpack (/* chain */) {}
+
+      extendWebpack(cfg) {
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias,
+          '@api': path.resolve(__dirname, './src/api'),
+          '@assets': path.resolve(__dirname, './src/assets'),
+          '@boot': path.resolve(__dirname, './src/boot'),
+          '@components': path.resolve(__dirname, './src/components'),
+          '@helpers': path.resolve(__dirname, './src/helpers'),
+          '@layouts': path.resolve(__dirname, './src/layouts'),
+          '@models': path.resolve(__dirname, './src/models'),
+          '@modules': path.resolve(__dirname, './src/modules'),
+          '@pages': path.resolve(__dirname, './src/pages'),
+          '@stores': path.resolve(__dirname, './src/stores'),
+        };
+      },
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-devServer
