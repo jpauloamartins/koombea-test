@@ -92,7 +92,7 @@ export default defineComponent({
       try {
         const response = await signUp(formData as SignInData);
 
-        await this.authUser(response);
+        await this.authUser(response.accessToken);
 
         this.$router.push('/scrape');
       } catch {

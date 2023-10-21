@@ -15,6 +15,10 @@ declare module '@vue/runtime-core' {
 // for each client)
 const api = axios.create({ baseURL: '/api' });
 
+function setToken(token: string | null) {
+  api.defaults.headers.Authorization = token ? `Bearer ${token}` : null;
+}
+
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
@@ -27,4 +31,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-export { api };
+export { api, setToken };
