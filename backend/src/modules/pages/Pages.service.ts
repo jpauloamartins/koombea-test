@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import axios from 'axios';
 
 import { User } from '@models/User.entity';
 import { Page, PageScrapeStatus } from '@models/Page.entity';
 import { PageLink } from '@models/PageLink.entity';
+import { WebCrawlerService } from '@modules/crawler/WebCrawler.service';
 
 @Injectable()
 export class PagesService {
+  constructor(protected webCrawlerService: WebCrawlerService) {}
+
   async scrapePage(user: User, url: string) {
     const page = new Page();
     page.url = url;
@@ -21,7 +23,7 @@ export class PagesService {
 
   protected async processPage(page: Page) {
     try {
-      const { data } = await axios.get(page.url);
+      const data = await this.webCrawlerService.fetchPage(page.url);
 
       const titleRegex = new RegExp('<title.*>(.*?)</title.*>', 'g');
       const titleMatch = titleRegex.exec(data);
