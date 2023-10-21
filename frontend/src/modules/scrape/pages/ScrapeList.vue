@@ -90,6 +90,7 @@ export default defineComponent({
 
   data() {
     return {
+      interval: null as NodeJS.Timeout | null,
       pages: {
         data: [] as IPage[],
         loading: false,
@@ -126,6 +127,14 @@ export default defineComponent({
 
   created() {
     this.loadPages();
+
+    this.interval = setInterval(() => {
+      this.loadPages();
+    }, 1000);
+  },
+
+  unmounted() {
+    this.interval && clearInterval(this.interval);
   },
 
   methods: {
