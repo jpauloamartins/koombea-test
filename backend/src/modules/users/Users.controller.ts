@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
-import { Public } from '@guards/JWTAuthGuard';
+import { Public } from '@lib/guards/JWTAuthGuard';
 
 import { SignInDTO } from './models/SignInDTO';
 import { SignUpDTO } from './models/SignUpDTO';
