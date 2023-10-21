@@ -38,6 +38,7 @@
       </v-form>
       <div>
         <q-table
+          color="primary"
           :columns="columns"
           :rows="pages.data"
           flat
@@ -54,7 +55,7 @@ import { defineComponent } from 'vue';
 import { Form, Field } from 'vee-validate';
 import { QTableProps } from 'quasar';
 
-import { getPages, getPage, scrapePage } from '@api/pages';
+import { getPages, scrapePage } from '@api/pages';
 import { IPage } from '@models/IPage';
 
 export default defineComponent({
@@ -83,7 +84,7 @@ export default defineComponent({
           format: (title: string, row: IPage) => {
             return title || row.url;
           },
-          label: 'Label',
+          label: 'Title',
           align: 'left',
         },
         {
@@ -124,7 +125,7 @@ export default defineComponent({
     },
 
     openRow(event: unknown, page: IPage) {
-      getPage(page.id);
+      this.$router.push(`/scrape/${page.id}`);
     },
   },
 });
