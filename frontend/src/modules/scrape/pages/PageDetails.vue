@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-lg flex justify-center">
     <div id="page-details" class="q-col-gutter-md">
-      <div class="q-col-gutter-md flex items-center">
+      <div class="q-col-gutter-md flex items-center no-wrap">
         <div>
           <q-btn
             icon="arrow_back"
