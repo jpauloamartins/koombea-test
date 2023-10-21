@@ -72,6 +72,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Form, Field } from 'vee-validate';
+import { mapActions } from 'pinia';
+
+import { SignInData, signIn } from '@api/users';
+import { useUserStore } from '@stores/userStore';
 
 export default defineComponent({
   name: 'SignIn',
@@ -82,8 +86,23 @@ export default defineComponent({
   },
 
   methods: {
+    ...mapActions(useUserStore, ['authUser']),
+
     async signIn(formData: unknown) {
-      console.log(formData);
+      try {
+        const response = await signIn(formData as SignInData);
+
+        await this.authUser(response);
+
+        this.$router.push('/scrape');
+      } catch (error) {
+        console.log(error);
+
+        this.$q.notify({
+          type: 'negative',
+          message: 'User not found',
+        });
+      }
     },
   },
 });

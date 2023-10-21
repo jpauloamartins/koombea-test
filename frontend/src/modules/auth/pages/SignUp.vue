@@ -72,6 +72,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Form, Field } from 'vee-validate';
+import { mapActions } from 'pinia';
+
+import { SignInData, signUp } from '@api/users';
+import { useUserStore } from '@stores/userStore';
 
 export default defineComponent({
   name: 'SignUp',
@@ -82,8 +86,21 @@ export default defineComponent({
   },
 
   methods: {
+    ...mapActions(useUserStore, ['authUser']),
+
     async signUp(formData: unknown) {
-      console.log(formData);
+      try {
+        const response = await signUp(formData as SignInData);
+
+        await this.authUser(response);
+
+        this.$router.push('/scrape');
+      } catch {
+        this.$q.notify({
+          type: 'negative',
+          message: 'An error ocurred while signing up.',
+        });
+      }
     },
   },
 });
