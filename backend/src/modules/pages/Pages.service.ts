@@ -29,7 +29,7 @@ export class PagesService {
     try {
       const data = await this.webCrawlerService.fetchPage(page.url);
 
-      const { title, links } = await this.scraper.scrape(data);
+      const { title, links } = this.scraper.scrape(data);
 
       const linksPromises = links.map((_link) => {
         const link = new PageLink();

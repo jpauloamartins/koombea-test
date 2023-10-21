@@ -7,5 +7,5 @@ export interface ScreperResult {
 }
 
 export abstract class Scraper {
-  abstract scrape(data: string): Promise<ScreperResult>;
+  abstract scrape(data: string): ScreperResult;
 }

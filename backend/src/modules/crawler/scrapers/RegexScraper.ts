@@ -5,11 +5,11 @@ import { Scraper } from './Scraper';
 
 @Injectable()
 export class RegexScraper extends Scraper {
-  async scrape(data: string) {
-    const titleRegex = new RegExp('<title.*>(.*?)</title.*>', 'g');
+  scrape(data: string) {
+    const titleRegex = new RegExp('<title.*>(.*?)</title.*>', 'gmis');
     const titleMatch = titleRegex.exec(data);
 
-    const linksRegex = new RegExp('<a.*?href="(.*?)".*?>(.*?)</a>', 'g');
+    const linksRegex = new RegExp('<a.*?href="(.*?)".*?>(.*?)</a>', 'gmis');
     const linksMatches = data.matchAll(linksRegex);
 
     const links = [];
