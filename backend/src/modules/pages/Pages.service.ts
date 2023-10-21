@@ -20,31 +20,36 @@ export class PagesService {
   }
 
   protected async processPage(page: Page) {
-    const { data } = await axios.get(page.url);
+    try {
+      const { data } = await axios.get(page.url);
 
-    const titleRegex = new RegExp('<title>(.*?)</title>', 'g');
-    const titleMatch = titleRegex.exec(data);
+      const titleRegex = new RegExp('<title.*>(.*?)</title.*>', 'g');
+      const titleMatch = titleRegex.exec(data);
 
-    const linksRegex = new RegExp('<a.*?href="(.*?)".*?>(.*?)</a>', 'g');
-    const linksMatches = data.matchAll(linksRegex);
+      const linksRegex = new RegExp('<a.*?href="(.*?)".*?>(.*?)</a>', 'g');
+      const linksMatches = data.matchAll(linksRegex);
 
-    const links = [];
+      const links = [];
 
-    for (const match of linksMatches) {
-      const link = new PageLink();
-      link.url = match[1];
-      link.label = match[2].replaceAll(/(<([^>]+)>)/gi, '').trim();
-      link.page = page;
+      for (const match of linksMatches) {
+        const link = new PageLink();
+        link.url = match[1];
+        link.label = match[2].replaceAll(/(<([^>]+)>)/gi, '').trim();
+        link.page = page;
 
-      await link.save();
+        await link.save();
 
-      links.push(link);
+        links.push(link);
+      }
+
+      page.title = titleMatch[1].trim();
+      page.status = PageScrapeStatus.SCRAPED;
+      page.linksCount = links.length;
+
+      await page.save();
+    } catch {
+      page.status = PageScrapeStatus.ERROR;
+      await page.save();
     }
-
-    page.title = titleMatch[1].trim();
-    page.status = PageScrapeStatus.SCRAPED;
-    page.linksCount = links.length;
-
-    await page.save();
   }
 }
