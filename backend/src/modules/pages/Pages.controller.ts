@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 
 import { CurrentUser } from '@lib/params/CurrentUser';
 import { Page } from '@models/Page.entity';
@@ -12,8 +12,21 @@ export class PagesController {
   constructor(protected pagesService: PagesService) {}
 
   @Get()
-  listPages(@CurrentUser() user: User) {
-    return Page.findBy({ userId: user.id });
+  async listPages(
+    @CurrentUser() user: User,
+    @Query('take') take: number,
+    @Query('skip') skip: number,
+  ) {
+    take = take || 5;
+    skip = skip || 0;
+
+    const [rows, total] = await Page.findAndCount({
+      where: { userId: user.id },
+      take,
+      skip,
+    });
+
+    return { rows, total };
   }
 
   @Get(':id')

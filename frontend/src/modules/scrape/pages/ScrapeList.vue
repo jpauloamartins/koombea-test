@@ -43,6 +43,8 @@
           :rows="pages.data"
           flat
           :loading="pages.loading"
+          v-model:pagination="pagination"
+          @request="loadPages"
           @row-click="openRow"
         >
           <template #body-cell-status="props">
@@ -76,9 +78,16 @@
 import { defineComponent } from 'vue';
 import { Form, Field } from 'vee-validate';
 import { QTableProps } from 'quasar';
+import { pathOr } from 'ramda';
 
 import { getPages, scrapePage } from '@api/pages';
 import { IPage } from '@models/IPage';
+
+const DEFAULT_PAGINATION = {
+  page: 1,
+  rowsPerPage: 5,
+  rowsNumber: 0,
+};
 
 export default defineComponent({
   name: 'ScrapeList',
@@ -90,11 +99,11 @@ export default defineComponent({
 
   data() {
     return {
-      interval: null as NodeJS.Timeout | null,
       pages: {
         data: [] as IPage[],
         loading: false,
       },
+      pagination: DEFAULT_PAGINATION,
     };
   },
 
@@ -127,21 +136,24 @@ export default defineComponent({
 
   created() {
     this.loadPages();
-
-    this.interval = setInterval(() => {
-      this.loadPages();
-    }, 1000);
-  },
-
-  unmounted() {
-    this.interval && clearInterval(this.interval);
   },
 
   methods: {
-    async loadPages() {
+    async loadPages(params?: { pagination: QTableProps['pagination'] }) {
+      const pagination = pathOr(DEFAULT_PAGINATION, ['pagination'], params);
+
+      this.pagination = pagination;
+
+      const take = pathOr(5, ['rowsPerPage'], pagination);
+      const skip = (pathOr(1, ['page'], pagination) - 1) * take;
+
       try {
         this.pages.loading = true;
-        this.pages.data = await getPages();
+
+        const { rows, total } = await getPages(skip, take);
+
+        this.pages.data = rows;
+        this.pagination.rowsNumber = total;
       } finally {
         this.pages.loading = false;
       }
@@ -153,6 +165,7 @@ export default defineComponent({
       const page = await scrapePage(url);
 
       this.pages.data.push(page);
+      this.pagination.rowsNumber += 1;
     },
 
     openRow(event: unknown, page: IPage) {

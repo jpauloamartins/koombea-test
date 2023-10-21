@@ -1,7 +1,9 @@
 import { api } from '@boot/axios';
 
-export async function getPages() {
-  const response = await api.get('pages');
+export async function getPages(skip?: number, take?: number) {
+  const response = await api.get('pages', {
+    params: { skip, take },
+  });
 
   return response.data;
 }
