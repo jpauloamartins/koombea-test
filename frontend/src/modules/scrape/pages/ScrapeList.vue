@@ -44,7 +44,29 @@
           flat
           :loading="pages.loading"
           @row-click="openRow"
-        />
+        >
+          <template #body-cell-status="props">
+            <q-td>
+              <q-spinner
+                v-if="props.value === 'SCRAPING'"
+                color="primary"
+                size="sm"
+              />
+              <q-icon
+                v-else-if="props.value === 'SCRAPED'"
+                name="check_circle"
+                color="positive"
+                size="sm"
+              />
+              <q-icon
+                v-else
+                name="cancel"
+                color="negative"
+                size="sm"
+              />
+            </q-td>
+          </template>
+        </q-table>
       </div>
     </div>
   </q-page>
