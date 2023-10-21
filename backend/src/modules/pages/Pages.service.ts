@@ -4,10 +4,14 @@ import { User } from '@models/User.entity';
 import { Page, PageScrapeStatus } from '@models/Page.entity';
 import { PageLink } from '@models/PageLink.entity';
 import { WebCrawlerService } from '@modules/crawler/WebCrawler.service';
+import { Scraper } from '@modules/crawler/scrapers/Scraper';
 
 @Injectable()
 export class PagesService {
-  constructor(protected webCrawlerService: WebCrawlerService) {}
+  constructor(
+    protected webCrawlerService: WebCrawlerService,
+    protected scraper: Scraper,
+  ) {}
 
   async scrapePage(user: User, url: string) {
     const page = new Page();
@@ -25,30 +29,22 @@ export class PagesService {
     try {
       const data = await this.webCrawlerService.fetchPage(page.url);
 
-      const titleRegex = new RegExp('<title.*>(.*?)</title.*>', 'g');
-      const titleMatch = titleRegex.exec(data);
+      const { title, links } = await this.scraper.scrape(data);
 
-      const linksRegex = new RegExp('<a.*?href="(.*?)".*?>(.*?)</a>', 'g');
-      const linksMatches = data.matchAll(linksRegex);
-
-      const links = [];
-
-      for (const match of linksMatches) {
+      const linksPromises = links.map((_link) => {
         const link = new PageLink();
-        link.url = match[1];
-        link.label = match[2].replaceAll(/(<([^>]+)>)/gi, '').trim();
+        link.url = _link.url;
+        link.label = _link.label;
         link.page = page;
 
-        await link.save();
+        return link.save();
+      });
 
-        links.push(link);
-      }
-
-      page.title = titleMatch[1].trim();
+      page.title = title;
       page.status = PageScrapeStatus.SCRAPED;
       page.linksCount = links.length;
 
-      await page.save();
+      await Promise.all([...linksPromises, page.save()]);
     } catch {
       page.status = PageScrapeStatus.ERROR;
       await page.save();
