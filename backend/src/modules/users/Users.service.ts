@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-// import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-// import { DataSource } from 'typeorm';
 import { hash, compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 
@@ -8,17 +6,10 @@ import { User } from '@models/User.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    // @Inject('DATA_SOURCE') protected dataSource: DataSource,
-    protected jwtService: JwtService,
-  ) {}
+  constructor(protected jwtService: JwtService) {}
 
   getUser(id: string) {
-    return {
-      id,
-      email: 'email@email.com',
-      password: '123',
-    };
+    return User.findOneBy({ id });
   }
 
   async signIn(email: string, password: string) {
