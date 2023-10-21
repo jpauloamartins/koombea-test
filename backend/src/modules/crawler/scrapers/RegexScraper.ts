@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { pathOr } from 'ramda';
 
 import { Scraper } from './Scraper';
 
@@ -15,13 +16,15 @@ export class RegexScraper extends Scraper {
 
     for (const match of linksMatches) {
       links.push({
-        url: match[1],
-        label: match[2].replaceAll(/(<([^>]+)>)/gi, '').trim(),
+        url: pathOr('', [1], match),
+        label: pathOr('', [2], match)
+          .replaceAll(/(<([^>]+)>)/gi, '')
+          .trim(),
       });
     }
 
     return {
-      title: titleMatch[1].trim(),
+      title: pathOr('', [1], titleMatch).trim(),
       links,
     };
   }
